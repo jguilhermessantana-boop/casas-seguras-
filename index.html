@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Casa Segura Inteligente</title>
+</head>
+<body>
+    <h1>Casa Segura Inteligente</h1>
+
+    <h2>Tabelas</h2>
+
+    {% for nome in tabelas %}
+        <a href="/{{ nome }}">{{ nome }}</a> |
+    {% endfor %}
+
+    {% if tabela_atual is defined %}
+        <h2>Cadastrar em {{ tabela_atual }}</h2>
+
+        <form action="/cadastrar/{{ tabela_atual }}" method="POST">
+            {% for campo in tabelas[tabela_atual] %}
+                <label>{{ campo }}</label>
+                <input type="text" name="{{ campo }}" required>
+                <br><br>
+            {% endfor %}
+            <button type="submit">Cadastrar</button>
+        </form>
+
+        <h2>Registros</h2>
+
+        {% if dados %}
+            {% for registro in dados %}
+                <hr>
+                <p>ID: {{ registro.id }}</p>
+
+                <form action="/editar/{{ tabela_atual }}/{{ registro.id }}"
+                      method="POST">
+
+                    {% for campo in tabelas[tabela_atual] %}
+                        <label>{{ campo }}</label>
+                        <input type="text" name="{{ campo }}"
+                               value="{{ registro[campo] }}" required>
+                        <br>
+                    {% endfor %}
+
+                    <button type="submit">Salvar alteração</button>
+                </form>
+
+                <form action="/excluir/{{ tabela_atual }}/{{ registro.id }}"
+                      method="POST"
+                      onsubmit="return confirm('Deseja excluir?')">
+                    <button type="submit">Excluir</button>
+                </form>
+            {% endfor %}
+        {% else %}
+            <p>Nenhum registro cadastrado.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
